@@ -328,88 +328,57 @@
             <div id="certContent" style="width:100%; height:100vh;"></div>
 
 <script>
-function showCertificate(code) {
+function verifyCode() {
+    const code = document.getElementById('codeInput').value.trim();
+    const errorMsg = document.getElementById('errorMsg');
+
+    if (validCodes[code]) {
+        const pdfFileName = validCodes[code];
+        openPDF(pdfFileName, code);
+        errorMsg.style.display = 'none';
+    } else {
+        errorMsg.style.display = 'block';
+        document.getElementById('codeInput').value = '';
+        document.getElementById('codeInput').focus();
+    }
+}
+
+function openPDF(fileName, code) {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('pdfView').style.display = 'block';
+    
+    document.querySelector('.pdf-title span').textContent = fileName;
+    updateCertificateContent(code);
+}
+
+function updateCertificateContent(code) {
     const certContent = document.getElementById("certContent");
 
     if (code === '1164') {
-        certContent.innerHTML = `
-           <iframe src="1.pdf" width="100%" height="100%"></iframe>
-
-        `;
+        certContent.innerHTML = `<iframe src="1.pdf"></iframe>`;
     } else if (code === '2811') {
-        certContent.innerHTML = `
-           <iframe src="2.pdf" width="100%" height="100%"></iframe>
-        `;
+        certContent.innerHTML = `<iframe src="2.pdf"></iframe>`;
     } else if (code === '1234') {
-        certContent.innerHTML = `
-             <iframe src="3.pdf" width="100%" height="100%"></iframe>
-        `;
+        certContent.innerHTML = `<iframe src="3.pdf"></iframe>`;
     } else {
-        certContent.innerHTML = `<p style="color:red; text-align:center;">Bunday kodli sertifikat topilmadi.</p>`;
+        certContent.innerHTML = `<p style="color:red;">PDF topilmadi yoki kod noto‘g‘ri.</p>`;
     }
 }
-</script>
 
-
-            <button class="back-btn" onclick="goBack()">◀ Orqaga</button>
+function goBack() {
+    document.getElementById('loginView').style.display = 'block';
+    document.getElementById('pdfView').style.display = 'none';
+    document.getElementById('certContent').innerHTML = '';
+    document.getElementById('codeInput').focus();
+}
+       
+    </script>
+             <button class="back-btn" onclick="goBack()">◀ Orqaga</button>
         </div>
     </div>
-
-    <script>
-        const validCodes = {
-            '1164': '1.pdf',
-            '2811': '2.pdf',
-            '1234': '3.pdf'
-        };
-
-        function verifyCode() {
-            const code = document.getElementById('codeInput').value.trim();
-            const errorMsg = document.getElementById('errorMsg');
-
-            if (validCodes[code]) {
-                const pdfFileName = validCodes[code];
-                // PDF faylni ochish
-                openPDF(pdfFileName, code);
-                errorMsg.style.display = 'none';
-            } else {
-                errorMsg.style.display = 'block';
-                document.getElementById('codeInput').value = '';
-                document.getElementById('codeInput').focus();
-            }
-        }
-
-        function openPDF(fileName, code) {
-            // PDF faylni yangi oynada ochish
-            // Haqiqiy tizimda bu yerda server'dan PDF faylni yuklab olish kerak
-            
-            // Demo uchun: PDF ko'rinishini ko'rsatamiz
-            document.getElementById('loginView').style.display = 'none';
-            document.getElementById('pdfView').style.display = 'block';
-            
-            // PDF fayl nomini ko'rsatish
-            const pdfTitleElement = document.querySelector('.pdf-title div:last-child');
-            pdfTitleElement.textContent = fileName;
-            
-            // Har bir kod uchun turli ma'lumotlarni ko'rsatish
-            updateCertificateContent(code);
-        }
-
-       
-
-        function goBack() {
-            document.getElementById('pdfView').style.display = 'none';
-            document.getElementById('loginView').style.display = 'block';
-            document.getElementById('codeInput').value = '';
-        }
-
-        document.getElementById('codeInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                verifyCode();
-            }
-        });
-    </script>
 </body>
 </html>
+
 
 
 
